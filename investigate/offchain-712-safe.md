@@ -50,9 +50,31 @@ With Claude for some scaffolding I setup a vite + reown/appkit + wagmi + zustand
 
 After Getting the config right I am able to sign the erc712 typed data in Safe by my two signing wallets. However...
 
-I now need to setup the app to poll the safe transaction service for the status of the signature. There was also a message received over wallet connect that *might* be something interesting for us.
+I now need to setup the app to poll the safe transaction service for the status of the signature. 
 
-```
-"onRelayMessage() -> failed to process an inbound message: ALm/I7KpFzFLY4HEEMwY6BgHSwAsuE5VOMj8bJBdT2ameDhLFLFPSUd2gBXdLDYLv1LErC+YdvfB7oSThBWA7uUfhek0H6ahKvKaZ4m6h8ZO2XfXmitS0dO22xKd7rpuK0+0rXc+C559ggrcA6+FyznGmyU51tRaAL1Z4SogGFA4a9wkm8J1GLCdasQVNB1Gsq+5Q3fCwnBe89YFG36FpqFoxm8jedZ+wdQkJRuv0V7j/bE4P8Hym78gDzjunJA9ciDYZjTB6D9kOb7uK9AJVBASyli23wVmxifz/bg9VYs5Gxz7Hr8eaU7cvXEzEv8lMjhCt1WujidLyaGrvmDTad7QcbKywzWRUmLsdbMAoGJ5DSTKo8HKd29BG1GuyhEpyDf9KG/KzHCrnG88wHi4c6KuAeovFZ7XFK+VsnQNjAOlIwWfE46d5h4fzmSl15LBA73tzwBS"
-```
+SAFE provides API's for listing all messages for a Safe https://api.safe.global/tx-service/celo/api/v1/safes/${safeAddress}/messages 
+
+or fetching one message https://api.safe.global/tx-service/${chainName}/api/v1/messages/${msgHash}/
+
+Unfortunately the msgHash here is not the same as the message hash we get back from calling `hashTypedData` 
+
+The Safe UI displays 4 hashes.
+
+> SafeMessage:
+> 0x7e3b4bd7c4722b8b016356786481920e5c941b43cfff925c6500c23005c8bdaa
+> 
+> SafeMessage hash:
+> 0xb61f0567bd932d160847fcd5aa06ccc83a20783e23b997d4a97c77beed43849e
+> 
+> Domain hash:
+> 0x147a50bad9201678931fcd62a49d415e0d7138bb5e262a493779b9f93862c030
+> 
+> Message hash:
+> 0xb55cbc239659768f4692337e2db9333f383eca88163e0ff57b98fcafc475a111
+
+
+`SafeMessage hash` is `messageHash` in the  json returned from the messages list API service and the message_hash wanted by the message GET API.  https://api.safe.global/tx-service/celo/api/v1/messages/0xb61f0567bd932d160847fcd5aa06ccc83a20783e23b997d4a97c77beed43849e
+
+
+`SafeMessage` matches what is returned from passing our signTypedDataMessage object to `hashTypedData`
 
