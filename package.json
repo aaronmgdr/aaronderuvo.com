@@ -1,0 +1,24 @@
+{
+  "name": "aaronderuvo.com",
+  "version": "1.0.0",
+  "description": "Personal Professional Site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronmgdr/aaronderuvo.com.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/aaronmgdr/aaronderuvo.com/issues"
+  },
+  "homepage": "https://github.com/aaronmgdr/aaronderuvo.com#readme",
+  "dependencies": {
+    "@11ty/eleventy": "^3.1.2"
+  }
+}
