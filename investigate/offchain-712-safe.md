@@ -73,8 +73,17 @@ The Safe UI displays 4 hashes.
 > 0xb55cbc239659768f4692337e2db9333f383eca88163e0ff57b98fcafc475a111
 
 
-`SafeMessage hash` is `messageHash` in the  json returned from the messages list API service and the message_hash wanted by the message GET API.  https://api.safe.global/tx-service/celo/api/v1/messages/0xb61f0567bd932d160847fcd5aa06ccc83a20783e23b997d4a97c77beed43849e
+`SafeMessage hash` is `messageHash` in the  JSON returned from the messages list API service and the message_hash wanted by the message GET API.  https://api.safe.global/tx-service/celo/api/v1/messages/0xb61f0567bd932d160847fcd5aa06ccc83a20783e23b997d4a97c77beed43849e
 
 
 `SafeMessage` matches what is returned from passing our signTypedDataMessage object to `hashTypedData`
+
+https://github.com/safe-global/safe-core-sdk/blob/main/packages/protocol-kit/src/utils/signatures/utils.ts#L243
+
+We can get the hash we need (SafeMessage hash) by passing the hash obtained from `hashTypedData` into `Safe#getSafeMessageHash` method from "@safe-global/protocol-kit"
+
+
+```
+code snippet for that here.
+```
 
