@@ -87,3 +87,19 @@ We can get the hash we need (SafeMessage hash) by passing the hash obtained from
 code snippet for that here.
 ```
 
+tip: The safe transaction api appears to only return messages with at least one confirmation. 
+
+
+## steps. 
+
+1.initiate sign typed data over wallet connect as normal
+
+2. getSafeMessageHash
+
+3. use safe message hash to query safe for messages
+
+4. when confirmations match threshold save prepared signature
+
+5. pass safe message hash and signature to isVerifiedSignature
+
+6. Profit. 
