@@ -1,31 +1,58 @@
-title: Signing offchain EIP712 messages over Wallet Connect with SAFE multisigs
+title: Signing off-chain EIP-712 messages over WalletConnect with SAFE multisigs
 
 ----
 
 ## Intro
 
-A while ago my old team received a bug complaint. Users with safe multisigs couldn't sign the typed data message we used to listen delegates on Celo's Mondo Governance App. It seemed that without an onchain transaction to look for there was no way for the final signature to be received and due to how the cryptography works, We thought it was possible it would not work the same as an typical account, even if we did get a signature back. Reasoning that it was a rare issue for us and not specific to us, we created a workaround (asking users to submit a PR directly to us) and left it at won't fix. 
+A while ago my old team received a bug complaint. Users with SAFE multisigs couldn't sign the typed data message we used to listen for delegates on Celo's Mondo Governance App. It seemed that without an on-chain transaction to look for there was no way for the final signature to be received and due to how the cryptography works, we thought it would not work the same as a typical account even if we did get a signature back. We created a workaround (asking users to submit a PR directly to us) and left it at "won't fix." 
 
-I'm no longer with that team but now with some spare time on my hands curiousity has come back to the question: What would it truly take to make offchain signing of EIP712 typed data with multisigs not only possible but an excellent user experience? 
+I'm no longer with that team, and curiosity brought me back to this problem: what would it take to make offchain EIP-712 signing with multisigs not just possible, but a smooth user experience?
+
+**Who this is for**
+
+- Technical readers comfortable with web development (APIs, HTTP, async flows) but not expected to be blockchain experts. 
+- Engineers implementing auth/signature flows for dApps who want to support shared wallets (multisigs).
+
+**Follow along**
+
+- A companion repo for this article exists at https://github.com/aaronmgdr/712-offchain-safe-signer-demo
+
+**TL;DR — What you'll learn**
+
+- Plain-language background on the building blocks (EIP-712, SAFE multisigs, WalletConnect).
+- A high-level flow for how safe multisigs sign offchain typed data and how your app can detect completion.
+- Concrete code snippets and polling/persistence ideas to give a reliable UX.
+
+**What success looks like**
+
+Users who connect a SAFE multisig should see a single persistent "signing in progress" message, the app should detect finalization when the multisig reaches its threshold, verify the final signature via ERC-1271, and accept the signed submission exactly like an EOA signature would be accepted.
 
 ## Quick tangent on background
 
-* EIP712 -- the standard for signing (on or offchain) structured data. 
+A short, plain-language glossary and a simple flow will help make the rest of the article much easier to follow.
 
-* SAFE Multisig -- the Industry standard for EVM multi party/multi key vaults. 
+**Some Terms**
 
-* Wallet Connect -- connects a signer to dAPP requestiing signaure. (In our case Signer is the SAFE vault itself and then signers of the multisig connect to SAFE with another Wallet Connect connection. So that there are 2 layers of connection -- multi-sig-signer-key to multisig and multisig to dapp).
+- **EIP-712** — a standard way to sign structured data so both the signer and the verifier know exactly what was approved. Think: signing a JSON contract instead of a single opaque blob.
+- **SAFE multisig** — a shared wallet (a "safe") controlled by multiple people. A configured threshold (e.g., 2-of-3) determines how many signers must agree to create a valid signature for actions. 
+- **WalletConnect** — a transport protocol that lets a dApp ask a wallet to sign something (like OAuth but for wallets).
+- **ERC-1271** — a standard that lets a smart contract validate signatures. Since a multisig is a contract, it can't produce a regular EOA signature; instead the contract exposes an `isValidSignature` method you can call to verify a signature.
+
+**High-level flow (how it works)**
+
+1. The dApp prepares an EIP-712 typed-data message and asks the connected signer to sign via WalletConnect.
+2. If the connected address is a SAFE, the SAFE will create an internal message that other owners can confirm (it registers a SafeMessage).
+3. Owners confirm the message by signing it with their individual keys (sometimes via WalletConnect sessions to the SAFE UI).
+4. When enough confirmations are collected (meets the SAFE threshold), the SAFE aggregates/prepares a final signature. The dApp can then call the SAFE contract's `isValidSignature` to confirm the message is valid.
 
 
 ## Searching for Answers
 
-Gemini says we will be needing SAFE'S Protocol Kit https://docs.safe.global/sdk/protocol-kit 
-Remember this for later. 
+Gemini says we will be needing SAFE'S Protocol Kit https://docs.safe.global/sdk/protocol-kit — remember this for later.
 
-The hunch that a multisig signature would not be verifiable in the same way as an EOA turned out to be correct. Thankfully there is an ERC for that. [ERC-1271: Standard Signature Validation Method for Contracts ](https://eips.ethereum.org/EIPS/eip-1271) So there is a way. 
+My hunch that a multisig signature would not be verifiable in the same way as an EOA was correct. Thankfully there is an ERC for that: [ERC-1271: Standard Signature Validation Method for Contracts](https://eips.ethereum.org/EIPS/eip-1271). In practice this means you don't recover an EOA `address` from the signature; instead you call the multisig contract's `isValidSignature` method with the signed data and the signature. If valid, `isValidSignature` returns the 4-byte magic value `0x1626ba7e` (the standard success marker defined by ERC-1271).
 
 CoW DAO has an [excellent explanation of ERC-1271](https://cow.fi/learn/eip-1271-explained).
-
 
 ## The Desired Outcome
 
@@ -37,22 +64,22 @@ When I sign with a SAFE Multisig the app
 
 a) shows me a toast message that I am signing with a multisig
 
-b) keeps showing that toast even if I reconnect only days later because it has a persistant memory that A 712 message signing is in progress
+b) keeps showing that toast even if I reconnect only days later because it has a persistent memory that an EIP-712 message signing is in progress
 
-c) is aware when the the safe multisig has completed signing
+c) is aware when the SAFE multisig has completed signing
 
 d) verifies the final message with ERC1271 and shows the success message if valid in same way as for EOA
 
 
-### The trials and Errors 
+### Trials and errors 
 
-With Claude for some scaffolding I setup a vite + reown/appkit + wagmi + zustand app. 
+With Claude for some scaffolding I set up a Vite + reown/appkit + wagmi + zustand app. 
 
-After Getting the config right I am able to sign the erc712 typed data in Safe by my two signing wallets. However...
+After getting the config right, I was able to sign the EIP-712 typed data in the Safe using my two signing wallets. However...
 
-I now need to setup the app to poll the safe transaction service for the status of the signature. 
+I now need to set up the app to poll the Safe transaction service for the status of the signature. 
 
-SAFE provides API's for listing all messages for a Safe https://api.safe.global/tx-service/celo/api/v1/safes/${safeAddress}/messages 
+SAFE provides APIs for listing all messages for a Safe https://api.safe.global/tx-service/celo/api/v1/safes/${safeAddress}/messages 
 
 or fetching one message https://api.safe.global/tx-service/${chainName}/api/v1/messages/${msgHash}/
 
@@ -96,10 +123,10 @@ const safe = await Safe.init({
       safeAddress: addressOfTheConnectedSafe
   });
 
-const safeMessagreHash = await safe.getSafeMessageHash(messageHash),
+const safeMessageHash = await safe.getSafeMessageHash(messageHash);
 ```
 
-Call the safe-tx api service https://api.safe.global/tx-service/${chainName}/api/v1/messages/${safeMessageHash}/ with the following headers
+Call the Safe tx-service API https://api.safe.global/tx-service/${chainName}/api/v1/messages/${safeMessageHash}/ with the following headers
 
 ```typescript
 {
@@ -109,54 +136,96 @@ Call the safe-tx api service https://api.safe.global/tx-service/${chainName}/api
 }
 ```
 
-There will be 2 fields on the response that you will need. `confirmations` and `preparedSignature`
+There will be two fields on the message GET response that matter here: `confirmations` and `preparedSignature`.
 
-Compare the confirmations count to the threshold return from `safe.getThreshold()`. when the count is sufficient call `isValidSignature` on your safe wallet contract instance. 
+- `confirmations` is an array of the owners who have confirmed the message. When its length meets the `safe.getThreshold()` value, you can validate the signature.
+- `preparedSignature` is the assembled signature payload that the SAFE exposes once signers have provided individual approvals. Its exact format can vary; treat it as an opaque `bytes` payload that you will pass into `isValidSignature`.
+
+A typical polling loop (pseudo-code):
 
 ```js
-const SAFE_ERC1271_ABI = [
-  {
-    inputs: [
-      { name: '_data', type: 'bytes' },
-      { name: '_signature', type: 'bytes' },
-    ],
-    name: 'isValidSignature',
-    outputs: [{ name: '', type: 'bytes4' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
+// 1) Ask Safe for its SafeMessageHash (see earlier) using the hashTypedData value
+// 2) GET /messages/{safeMessageHash}
+// 3) if (response.confirmations.length >= await safe.getThreshold()) {
+//      // we have enough confirmations
+//      const magic = await safeContract.isValidSignature(safeMessageHashBytes, response.preparedSignature)
+//      if (magic === '0x1626ba7e') {
+//        // signature is valid — proceed
+//      }
+// }
 ```
 
-
-
-## Steps. 
-
-1. initiate sign typed data over wallet connect as normal
-
-2. call getSafeMessageHash with the 
-
-3. use safe message hash to query safe for messages
-
-4. when confirmations match threshold save prepared signature
-
-5. pass safe message hash and signature to isVerifiedSignature
-
-6. Perform the action which required authentication
+Note: `0x1626ba7e` is the ERC-1271 success value (see above) however some implementations return `0x20c13b0b`. Also watch for empty `preparedSignature` values until enough confirmers have signed.
 
 
 
-## Whats good and what will need improvement.
+## Steps
 
-We successfully received the signature back in our application and were able able to verify it. 
+1. Initiate signing of typed data over WalletConnect as normal.
 
-However while this setup works nicely for signing with SAFE Wallets from one browser, most of the time an Multisig will have multiple people signing over potentially a multi day period. When signing our app doesnt have a way to check if the connect safe already has pending messages and as such always will initiate a new one.
+2. Call `getSafeMessageHash` with the typed-data message hash (the output from `hashTypedData`).
+
+3. Use the Safe message hash to query Safe for messages.
+
+4. When confirmations match the threshold, save `preparedSignature`.
+
+5. Pass the Safe message hash and signature to `isValidSignature`.
+
+6. Perform the action which required authentication.
 
 
-We will need a way to globally assosiate a connected address to pending signatures. We could use the SAFE api to look for messages without sufficient signatures And which match the domain we are using. Although without a verifying contract it is possible we will get a conflict or false positive or worse![1] A safer approach would be to save the SafeMessageHash to our own data store and query for message hashes associated with the connected address. 
+## Demo 
 
-Our solution also fails for other ERC1271 compliant wallets which are not SAFE wallets. An implementation that handles them will need to 1. differentiate between SAFE and other ERC1271 wallets and if not SAFE look for an alternate way to get the final signature. If simply a smart wallet the signature may be returned over wallet connect. if another type of multisig an alternative form of gathering signature status will need to be designed. 
+Visit [712-offchain-safe-signer-demo](https://712-offchain-safe-signer-demo.aaron-deruvo.workers.dev/) for a demonstration of this in action. 
 
 
- 1. A potential scenario. First signer is tricked into signing a nefarious message. It shows up on the legitimate website for the other signers. 
+
+## What's good and what needs improvement.
+
+We successfully received the signature back in our application and were able to verify it. 
+
+However, while this setup works nicely for signing with SAFE wallets from one browser, most of the time a multisig will have multiple people signing over a potentially multi-day period. When signing, our app doesn't have a way to check if the connected Safe already has pending messages, and as such will always initiate a new one.
+
+
+We will need a way to globally associate a connected address to pending signatures. We could use the SAFE API to look for messages without sufficient signatures that match the domain we are using. Although without a verifying contract it is possible we will get a conflict or false positive or worse! A safer approach would be to save the `safeMessageHash` to our own data store and query for message hashes associated with the connected address. 
+
+Our solution also fails for other ERC-1271 compliant wallets which are not SAFE wallets. An implementation that handles them will need to:
+
+1. Differentiate SAFE from other ERC-1271 contracts (SAFE has a tx-service and SDK).
+2. If not SAFE, look for alternate ways the wallet exposes signature state (some smart wallets will return prepared signatures over WalletConnect; others may require a completely different flow).
+
+---
+
+## Testing & debugging
+
+- Use the Safe UI to watch the same message appear; the UI lists the hashes and confirmations and is a good ground truth.
+- Query the Safe tx-service directly with curl to inspect the `confirmations` and `preparedSignature`. Example:
+
+```
+curl -H "Authorization: Bearer $SAFE_API_KEY" \
+  "https://api.safe.global/tx-service/${chainName}/api/v1/messages/${safeMessageHash}/"
+```
+
+- Call `isValidSignature` against the SAFE contract with the data and the `preparedSignature` to verify the magic success value.
+
+## UX & practical suggestions 🔧
+
+- Persist the `safeMessageHash` server-side (or in local storage) so reconnecting browsers can resume in-progress signings instead of creating duplicates.
+- When listing pending messages, narrow by domain and a nonce inside your typed data to avoid confusing unrelated messages.
+- Show a persistent toast stating "Multisig signing in progress" with a link to view status.
+
+## Security considerations
+
+- Always include a unique nonce and the dApp domain inside your EIP-712 domain to prevent replay and cross-site confusion.
+- Display the exact typed data that is being signed (human-friendly summary) before asking the SAFE to sign — phishing is possible if a signer is tricked into confirming a malicious payload.
+- Consider server-side verification and auditing: store message hashes and the expected typed data when creating signing requests.
+
+## Next steps & resources
+
+- Read the Safe Protocol Kit docs: https://docs.safe.global/sdk/protocol-kit
+- ERC-1271 spec: https://eips.ethereum.org/EIPS/eip-1271
+- CoW DAO's explanation of ERC-1271: https://cow.fi/learn/eip-1271-explained
+
+---
+
 
