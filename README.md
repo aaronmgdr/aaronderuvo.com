@@ -24,3 +24,5 @@ Hosting
 
 Runtime
 	11ty https://www.11ty.dev/docs/
+
+summaries are generated locally and committed

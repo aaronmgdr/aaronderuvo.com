@@ -1,3 +1,4 @@
 /node_modules
 /_site
 _site/README/index.html
+.env

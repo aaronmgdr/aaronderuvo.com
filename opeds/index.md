@@ -4,4 +4,14 @@ title: Opinions
 ---
 # Opinions
 
-- [On AI Applications](/opeds/on-ai/)
+<ul>
+{% for item in collections.opeds %}
+  <li>
+    <a href="{{ item.url }}">{{ item.data.title }}</a>
+    {% assign s = summaries[item.fileSlug] %}
+    {% if s %}
+      <p class="summary">{{ s }}</p>
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>

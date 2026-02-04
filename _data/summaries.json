@@ -1,0 +1,4 @@
+{
+  "on-ai": "The author explores AI's evolution from debugging tool to comprehensive programming assistant, suggesting AI's greatest potential lies not in flashy applications but in invisibly simplifying our chaotic digital lives. As AI accelerates tech development, the future may paradoxically demand simpler interfaces and devices that fade into the background.",
+  "offchain-712-safe": "SAFE multisigs can now sign off-chain EIP-712 messages through a polling system that detects when threshold signatures are reached and verifies them via ERC-1271. The author demonstrates how to build a smooth UX for multisig authentication flows that previously seemed impossible."
+}

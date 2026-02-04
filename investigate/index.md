@@ -4,4 +4,14 @@ title: Investigations
 ---
 # Investigations
 
-- [Signing off-chain EIP-712 messages over WalletConnect with SAFE multisigs](/investigate/offchain-712-safe/)
+<ul>
+{% for item in collections.investigate %}
+  <li>
+    <a href="{{ item.url }}">{{ item.data.title }}</a>
+    {% assign s = summaries[item.fileSlug] %}
+    {% if s %}
+      <p class="summary">{{ s }}</p>
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>
