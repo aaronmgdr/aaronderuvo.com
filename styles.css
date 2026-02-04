@@ -1,0 +1,106 @@
+* {
+  box-sizing: border-box;
+  --background: #f6faf4;
+  --background2: #FFFAEB;
+  --foreground: #151F15;
+  --primary: #002B33;
+  --primary-fade: #002B3322;
+
+}
+
+
+
+body {
+  font-family: ui-serif, Georgia, serif;
+  line-height: 1.6;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color:var(--background);
+  color: var(--foreground)
+}
+
+a {
+  color: var(--primary);
+}
+
+nav {
+  border-bottom: 1px solid #002B33;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 2rem;
+}
+nav a {
+  text-decoration: none;
+  color: var(--foreground);
+}
+nav a:hover {
+  text-decoration: underline;
+}
+nav svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  vertical-align: middle;
+}
+nav a:has(svg):hover {
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+}
+
+article {
+  max-width: 38rem;
+}
+
+code {
+  background-color: var(--background2);
+  display: inline-block;
+  padding: 0.6rem 0.3rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary);
+}
+
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h1[data-text]::before {
+  content: attr(data-text);
+  display: block;
+  position: absolute;
+  transform: scale(3);
+  z-index: -1;
+  color: var(--background2);
+}
+
+
+@media (max-width: 500px) {
+  h1 {
+      transform: scale(1);
+
+  }
+}

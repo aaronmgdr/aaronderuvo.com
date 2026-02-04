@@ -1,6 +1,7 @@
+---
+layout: article.njk
 title: On AI Applications
-
-----
+---
 
 As of February 2026, I've been using AI seriously for programming for about 6 months and playing around with it in general since the ChatGPT genesis moment. 
 

@@ -1,6 +1,7 @@
+---
+layout: article.njk
 title: Signing off-chain EIP-712 messages over WalletConnect with SAFE multisigs
-
-----
+---
 
 ## Intro
 
@@ -8,22 +9,22 @@ A while ago my old team received a bug complaint. Users with SAFE multisigs coul
 
 I'm no longer with that team, and curiosity brought me back to this problem: what would it take to make offchain EIP-712 signing with multisigs not just possible, but a smooth user experience?
 
-**Who this is for**
+### Who this is for
 
 - Technical readers comfortable with web development (APIs, HTTP, async flows) but not expected to be blockchain experts. 
 - Engineers implementing auth/signature flows for dApps who want to support shared wallets (multisigs).
 
-**Follow along**
+### Follow along
 
 - A companion repo for this article exists at https://github.com/aaronmgdr/712-offchain-safe-signer-demo
 
-**TL;DR — What you'll learn**
+### TL;DR — What you'll learn
 
 - Plain-language background on the building blocks (EIP-712, SAFE multisigs, WalletConnect).
 - A high-level flow for how safe multisigs sign offchain typed data and how your app can detect completion.
 - Concrete code snippets and polling/persistence ideas to give a reliable UX.
 
-**What success looks like**
+### What success looks like
 
 Users who connect a SAFE multisig should see a single persistent "signing in progress" message, the app should detect finalization when the multisig reaches its threshold, verify the final signature via ERC-1271, and accept the signed submission exactly like an EOA signature would be accepted.
 
@@ -31,14 +32,14 @@ Users who connect a SAFE multisig should see a single persistent "signing in pro
 
 A short, plain-language glossary and a simple flow will help make the rest of the article much easier to follow.
 
-**Some Terms**
+### Some Terms
 
 - **EIP-712** — a standard way to sign structured data so both the signer and the verifier know exactly what was approved. Think: signing a JSON contract instead of a single opaque blob.
 - **SAFE multisig** — a shared wallet (a "safe") controlled by multiple people. A configured threshold (e.g., 2-of-3) determines how many signers must agree to create a valid signature for actions. 
 - **WalletConnect** — a transport protocol that lets a dApp ask a wallet to sign something (like OAuth but for wallets).
 - **ERC-1271** — a standard that lets a smart contract validate signatures. Since a multisig is a contract, it can't produce a regular EOA signature; instead the contract exposes an `isValidSignature` method you can call to verify a signature.
 
-**High-level flow (how it works)**
+### High-level flow (how it works)
 
 1. The dApp prepares an EIP-712 typed-data message and asks the connected signer to sign via WalletConnect.
 2. If the connected address is a SAFE, the SAFE will create an internal message that other owners can confirm (it registers a SafeMessage).
@@ -104,11 +105,11 @@ The Safe UI displays 4 hashes.
 
 *tip: The safe tx-service api appears to only return messages with at least one confirmation.*
 
-`SafeMessage` matches what is returned from passing our signTypedDataMessage object to `hashTypedData`
+`SafeMessage` matches what is returned from passing our `signTypedDataMessage` object into viem's `hashTypedData`
 
 https://github.com/safe-global/safe-core-sdk/blob/main/packages/protocol-kit/src/utils/signatures/utils.ts#L243
 
-We can get the hash we need (SafeMessage hash) by passing the hash obtained from `hashTypedData` into `Safe#getSafeMessageHash` method from "@safe-global/protocol-kit"
+We can get the hash we need (SafeMessage *hash*) by passing the hash obtained from `hashTypedData` into `Safe#getSafeMessageHash` method from "@safe-global/protocol-kit"
 
 
 ```typescript
@@ -126,7 +127,7 @@ const safe = await Safe.init({
 const safeMessageHash = await safe.getSafeMessageHash(messageHash);
 ```
 
-Call the Safe tx-service API https://api.safe.global/tx-service/${chainName}/api/v1/messages/${safeMessageHash}/ with the following headers
+Call the Safe tx-service API `https://api.safe.global/tx-service/${chainName}/api/v1/messages/${safeMessageHash}/` with the following headers
 
 ```typescript
 {
@@ -208,7 +209,7 @@ curl -H "Authorization: Bearer $SAFE_API_KEY" \
 
 - Call `isValidSignature` against the SAFE contract with the data and the `preparedSignature` to verify the magic success value.
 
-## UX & practical suggestions 🔧
+## UX & practical suggestions
 
 - Persist the `safeMessageHash` server-side (or in local storage) so reconnecting browsers can resume in-progress signings instead of creating duplicates.
 - When listing pending messages, narrow by domain and a nonce inside your typed data to avoid confusing unrelated messages.
@@ -222,9 +223,9 @@ curl -H "Authorization: Bearer $SAFE_API_KEY" \
 
 ## Next steps & resources
 
-- Read the Safe Protocol Kit docs: https://docs.safe.global/sdk/protocol-kit
-- ERC-1271 spec: https://eips.ethereum.org/EIPS/eip-1271
-- CoW DAO's explanation of ERC-1271: https://cow.fi/learn/eip-1271-explained
+- [Read the Safe Protocol Kit docs](https://docs.safe.global/sdk/protocol-kit)
+- [ERC-1271 spec](https://eips.ethereum.org/EIPS/eip-1271)
+- [CoW DAO's explanation of ERC-1271](https://cow.fi/learn/eip-1271-explained)
 
 ---
 
