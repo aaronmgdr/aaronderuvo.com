@@ -3,12 +3,19 @@ layout: article.njk
 title: On AI Applications
 ---
 
+# How I use and think about  AI
+
 As of February 2026, I've been using AI seriously for programming for about 6 months and playing around with it in general since the ChatGPT genesis moment. 
+
+
+### Using AI
 
 The first killer use of AI for me was debugging React Native build issues using Warp terminal. Having full context into the result of the changes the AI made seemed to be the secret to gaining true productivity boost when using AI. 
 
 The second killer use for me was any language or technical skill I wasn't an expert in. Syntax for bash scripts, the proper formatting for a GitHub Actions YAML file...anything where I knew exactly what I wanted but not the precise was to write it. I reasoned this would be true for anyone. For a UX designer the killer application of AI would be auto building React components from Figma designs (and we did exactly this for the upcoming versions of the SELF.xyz mobile app). Whereas for for devs spinning up UIs, AI coming up with a color scheme is killer. These are cases where It's entirely possible it's not as good as having an expert do it but for anyone who isn't an expert the output is certainly good enough. 
 
 I recently wiped my computer and ended up not installing Warp. I now use the Claude VS Code extension. My use of AI has broadened and accelerated. I'll write up a problem case or user story and then come up with my own strategy to solve it and then ask Claude to find weaknesses in my solution and then once we figure those out tell it to execute and build it. Other times I'll write myself and ask Claude to spot any problem areas. Or if there is a error or bug that shows up give it to Claude to find the root cause. I'll also use Claude (or Gemini) for editing my writing -- not heavily just little grammar fixes or spelling mistakes. The em-dashes however -- those are all mine.
+
+### Thoughts on AI
 
 AI tools have definitely improved and to such an extent that I while it is easier than ever to build an app, I wonder if the value of any new app will have a shorter and shorter expiration. Already before AI my sense was that people were weary of apps, that the appetite for installing another was decreasing. Tech accelerates. AI accelerates the acceleration. For those who are not enthusiasts or technophiles  (and even for those of us who are ) there is a yearning for simplicity, predictability, and maybe not slowness but a peaceful Zen state. The future of AI might be to offload the chaos that tech has enabled our modern lives to become to AI-based systems while maintaining and improving our own clarity of thought. Interfaces that become simpler. Devices that do less. AI that disappears not in a Big Brother way but in Butlerian way. The best design is invisible. 
