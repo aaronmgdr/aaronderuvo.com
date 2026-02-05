@@ -5,9 +5,9 @@ title: Signing off-chain EIP-712 messages over WalletConnect with SAFE multisigs
 
 ## Intro
 
-A while ago my old team received a bug complaint. Users with SAFE multisigs couldn't sign the typed data message we used to register delegates on Celo's Mondo Governance App. Unlike an EOA where the signature was just returned over wallet connect, we were not receiving a valid signature back. Due to how the cryptography works,  even if we did get one back it was clear it wouldnt be verifiable in the same way. Reasoning that we had very few users who needed this feature. We created a workaround (asking users to submit a PR directly to us) and left it at "won't fix." 
+A while ago my old team received a bug complaint. Users with SAFE multisigs couldn't sign the typed data message we used to register delegates on Celo's Mondo Governance App. Unlike an EOA where the signature was simply returned over Wallet Connect socket, we were not receiving a valid signature back. Worst yet due to how the cryptography works, even if we did receive one back it was clear it wouldn't be verifiable in the same way. Reasoning that we had very few users who needed this feature, we created a workaround (asking users to submit a PR directly to us) and left it at "won't fix." 
 
-I'm no longer with that team, and curiosity brought me back to this problem: what would it take to make offchain EIP-712 signing with multisigs not just possible, but a smooth user experience?
+I'm no longer with that team, but curiosity brought me back to this problem: what would it take to make offchain EIP-712 signing with multisigs not just possible, but a smooth user experience?
 
 ### Who this is for
 
@@ -37,7 +37,7 @@ A short, plain-language glossary and a simple flow will help make the rest of th
 
 - **EIP-712** — a standard way to sign structured data so both the signer and the verifier know exactly what was approved. Think: signing a JSON contract instead of a single opaque blob.
 - **SAFE multisig** — a shared wallet (a "safe") controlled by multiple people. A configured threshold (e.g., 2-of-3) determines how many signers must agree to create a valid signature for actions. 
-- **WalletConnect** — a transport protocol that lets a dApp ask a wallet to sign something (like OAuth but for wallets).
+- **WalletConnect** — a transport protocol that lets a dApp ask a wallet to authorize something (like OAuth but for wallets).
 - **ERC-1271** — a standard that lets a smart contract validate signatures. Since a multisig is a contract, it can't produce a regular EOA signature; instead the contract exposes an `isValidSignature` method you can call to verify a signature.
 
 ### High-level flow (how it works)
