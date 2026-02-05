@@ -8,7 +8,8 @@
     "dev": "eleventy --serve",
     "summaries": "node ./scripts/generate-summaries.js",
     "build": "eleventy",
-    "deploy": "npx wrangler pages deploy _site --project-name aaronderuvo-com"
+    "deploy": "npx wrangler pages deploy _site --project-name aaronderuvo-com",
+    "update": "npm run build && npm run deploy"
   },
   "repository": {
     "type": "git",
