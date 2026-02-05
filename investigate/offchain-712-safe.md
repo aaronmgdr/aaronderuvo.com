@@ -5,7 +5,7 @@ title: Signing off-chain EIP-712 messages over WalletConnect with SAFE multisigs
 
 ## Intro
 
-A while ago my old team received a bug complaint. Users with SAFE multisigs couldn't sign the typed data message we used to listen for delegates on Celo's Mondo Governance App. It seemed that without an on-chain transaction to look for there was no way for the final signature to be received and due to how the cryptography works, we thought it would not work the same as a typical account even if we did get a signature back. We created a workaround (asking users to submit a PR directly to us) and left it at "won't fix." 
+A while ago my old team received a bug complaint. Users with SAFE multisigs couldn't sign the typed data message we used to register delegates on Celo's Mondo Governance App. Unlike an EOA where the signature was just returned over wallet connect, we were not receiving a valid signature back. Due to how the cryptography works,  even if we did get one back it was clear it wouldnt be verifiable in the same way. Reasoning that we had very few users who needed this feature. We created a workaround (asking users to submit a PR directly to us) and left it at "won't fix." 
 
 I'm no longer with that team, and curiosity brought me back to this problem: what would it take to make offchain EIP-712 signing with multisigs not just possible, but a smooth user experience?
 
@@ -16,7 +16,8 @@ I'm no longer with that team, and curiosity brought me back to this problem: wha
 
 ### Follow along
 
-- A companion repo for this article exists at https://github.com/aaronmgdr/712-offchain-safe-signer-demo
+- Clone the companion repo for this article [aaronmgdr/712-offchain-safe-signer-demo](https://github.com/aaronmgdr/712-offchain-safe-signer-demo)
+- View a deployment of the [demo repo](https://712-multisig-offchain.aaronderuvo.com) 
 
 ### TL;DR — What you'll learn
 
@@ -49,7 +50,7 @@ A short, plain-language glossary and a simple flow will help make the rest of th
 
 ## Searching for Answers
 
-Gemini says we will be needing SAFE'S Protocol Kit https://docs.safe.global/sdk/protocol-kit — remember this for later.
+Gemini says we will be needing [SAFE'S Protocol Kit](https://docs.safe.global/sdk/protocol-kit) — remember this for later.
 
 My hunch that a multisig signature would not be verifiable in the same way as an EOA was correct. Thankfully there is an ERC for that: [ERC-1271: Standard Signature Validation Method for Contracts](https://eips.ethereum.org/EIPS/eip-1271). In practice this means you don't recover an EOA `address` from the signature; instead you call the multisig contract's `isValidSignature` method with the signed data and the signature. If valid, `isValidSignature` returns the 4-byte magic value `0x1626ba7e` (the standard success marker defined by ERC-1271).
 
@@ -63,13 +64,13 @@ When I sign with an EOA the app waits for a signature and then when it receives 
 
 When I sign with a SAFE Multisig the app 
 
-a) shows me a toast message that I am signing with a multisig
+a. shows me a toast message that I am signing with a multisig
 
-b) keeps showing that toast even if I reconnect only days later because it has a persistent memory that an EIP-712 message signing is in progress
+b. keeps showing that toast even if I reconnect only days later because it has a persistent memory that an EIP-712 message signing is in progress
 
-c) is aware when the SAFE multisig has completed signing
+c. is aware when the SAFE multisig has completed signing
 
-d) verifies the final message with ERC1271 and shows the success message if valid in same way as for EOA
+d. verifies the final message with ERC1271 and shows the success message if valid in same way as for EOA
 
 
 ### Trials and errors 
