@@ -29,3 +29,8 @@ When type 2 meetings go off the rails it is because they are confused for these 
 * Max Size: 5
 
 * Duration: 30 minutes (but it can be better to go for 2 hours to get the final decision then put it off)
+
+
+## The key
+
+Recognize the type of meeting you are in or that you wish to create and act accordingly. Aim to maximize meeting effectiveness not only for your self but for all participants. 
