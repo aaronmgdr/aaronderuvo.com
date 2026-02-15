@@ -1,0 +1,17 @@
+{% for item in items %}
+  <article>
+    <heading>
+    <a class="summary-link" href="{{ item.url }}">
+    <h2>{{ item.data.title }}</h2>
+    {% assign s = summaries[item.fileSlug] %}
+    {% if s %}
+      <p class="summary">
+        
+        {{ s }}
+      </p>
+    {% endif %}
+    </a>
+    </heading>
+    <hr/>
+  </article>
+{% endfor %}

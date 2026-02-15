@@ -17,11 +17,11 @@ async function summarize(text, title) {
     messages: [
       {
         role: 'user',
-        content: `Summarize this article in 1-2 sentences (max 50 words). Be concise and capture the main point. No preamble, just the summary. Make the reader want to read more.
+        content: `In one or two sentences what is the question the following text is trying to answer? Write only that question, do not include any other information.
 
 Title: ${title}
 
-${text.slice(0, 3000)}`,
+${text.slice(0, 4000)}`,
       },
     ],
   })

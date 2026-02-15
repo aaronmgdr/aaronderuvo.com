@@ -23,6 +23,17 @@ body {
 a {
   color: var(--primary);
 }
+.summary-link {
+  text-decoration: none;
+}
+.summary-link:hover {
+  text-decoration: underline;
+}
+
+heading > h2 {
+  margin-bottom: 0
+}
+
 
 nav {
   border-bottom: 1px solid #002B33;
@@ -63,6 +74,13 @@ main {
 article {
   max-width: 38rem;
 }
+
+hr {
+  border: none;
+  border-bottom: 1px solid var(--foreground);
+  margin-bottom: 2rem 0;
+}
+
 
 code {
   background-color: var(--background2);
