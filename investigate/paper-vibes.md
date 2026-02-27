@@ -16,7 +16,7 @@ Note that each day isn't a full working day more like an afternoon.
 
 ### Days 0-1. 
 
-My finance and I have been using google keep to keep a shared diary where we write to each other about our day. I thought creating a dedicated app for this could be fun and simple. 
+My fiancée and I have been using google keep to keep a shared diary where we write to each other about our day. I thought creating a dedicated app for this could be fun and simple. 
 
 I began by telling google gemini about the app i wanted to build, and some technologies I was interested in using. Solid JS had been on my list for a while so I told gemini this while we were coming up with the stack. After specifying that I wanted a progressive web app with end to end encryption for creating a shared journal for couples and going back and forth with gemini to polish up all the product and technical requirements. I then described the aesthetic / feel I wanted and had it generate me a color scheme and visual spec. 
 
