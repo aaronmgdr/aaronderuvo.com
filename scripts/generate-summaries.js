@@ -17,7 +17,7 @@ async function summarize(text, title) {
     messages: [
       {
         role: 'user',
-        content: `In one or two sentences what is the question the following text is trying to answer? Write only that question, do not include any other information.
+        content: `In one or two sentences what is the question the following text is trying to answer? Write only that question. Do not include any other information. 
 
 Title: ${title}
 

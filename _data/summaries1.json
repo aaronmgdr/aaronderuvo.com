@@ -1,0 +1,5 @@
+{
+  "meetings": "Most meetings fail because teams confuse three distinct types: one-to-many broadcasts, many-to-one check-ins, and co-equal discussions—only the latter should happen frequently, with strict size limits.",
+  "on-ai": "The author shares how AI transformed their programming workflow—from debugging React Native builds to accelerating development through strategic problem-solving partnerships with Claude. They provocatively suggest AI's ultimate future isn't flashy apps, but invisible systems that simplify our chaotic tech-filled lives.",
+  "offchain-712-safe": "A developer explores solving the complex challenge of enabling SAFE multisig wallets to sign off-chain EIP-712 messages through WalletConnect, turning a previously \"won't fix\" bug into a smooth user experience. The article provides a technical deep-dive with code examples for implementing multisig signature flows in dApps."
+}

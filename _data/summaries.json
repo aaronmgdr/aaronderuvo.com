@@ -1,5 +1,6 @@
 {
   "meetings": "How can meetings be categorized and structured to be more effective?",
   "on-ai": "How does the author use AI tools in their work and what are their thoughts on AI's impact on technology and society?",
-  "offchain-712-safe": "How can dApps enable users with SAFE multisigs to sign off-chain EIP-712 messages over WalletConnect with a smooth user experience?"
+  "offchain-712-safe": "How can dApps enable users with SAFE multisigs to sign off-chain EIP-712 messages over WalletConnect with a smooth user experience?",
+  "paper-vibes": "How did the process of developing and refining a vibe-coded app (PaperHearts) evolve from initial idea to production-ready release over the course of 10 days?"
 }
