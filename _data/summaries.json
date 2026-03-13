@@ -1,6 +1,7 @@
 {
-  "meetings": "How can meetings be categorized and structured to be more effective?",
-  "on-ai": "How does the author use AI tools in their work and what are their thoughts on AI's impact on technology and society?",
-  "offchain-712-safe": "How can dApps enable users with SAFE multisigs to sign off-chain EIP-712 messages over WalletConnect with a smooth user experience?",
-  "paper-vibes": "How did the process of developing and refining a vibe-coded app (PaperHearts) evolve from initial idea to production-ready release over the course of 10 days?"
+  "meetings": "What are the different types of meetings and how can they be conducted effectively?",
+  "on-ai": "How does the author use AI tools and what are their thoughts on AI's impact on technology and society?",
+  "learning-zk": "How can one effectively use Claude to learn and build applications with unfamiliar blockchain technologies like zero-knowledge apps on Zeko?",
+  "offchain-712-safe": "How can dApps enable smooth off-chain EIP-712 message signing for users with SAFE multisig wallets over WalletConnect?",
+  "paper-vibes": "What lessons can be learned from the process of developing and refining an app called PaperHearts from initial idea through to production-ready release?"
 }
